@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: simple-ledger
+
+server:
+  address: 127.0.0.1
+  port: 8086
