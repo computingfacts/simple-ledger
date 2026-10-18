@@ -39,7 +39,8 @@ public class LedgerService {
             "Cannot withdraw %s: the balance is only %s".formatted(normalizedAmount.toPlainString(),
                 balance.toPlainString()));
       }
-      long transactionId = transactions.size();
+
+      long transactionId = transactions.size() + 1L;
       var transaction = new Transaction(transactionId, type, normalizedAmount, clock.instant());
       transactions.add(transaction);
       return transaction;
@@ -60,7 +61,7 @@ public class LedgerService {
 
   private static BigDecimal validateAndNormalizeAmount(TransactionType type, BigDecimal amount) {
     if (type == null || amount == null || amount.signum() <= 0 || amount.scale() > SCALE) {
-      throw new InvalidTransactionException("Invalid transaction");
+      throw new InvalidTransactionException("Invalid transaction request");
     }
     return amount.setScale(SCALE, RoundingMode.UNNECESSARY);
   }
