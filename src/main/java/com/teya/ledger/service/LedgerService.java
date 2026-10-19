@@ -13,6 +13,12 @@ import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 /**
+ * Records deposits and withdrawals for a single in-memory ledger.
+ * Provides the current balance and transaction history.
+ *
+ * <p>Access to ledger state is synchronised within this service instance.
+ * Data is lost when the application restarts.
+ *
  * @author Joseph Sampson
  */
 @Service
