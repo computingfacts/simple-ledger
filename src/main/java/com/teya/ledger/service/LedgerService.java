@@ -33,7 +33,6 @@ public class LedgerService {
     var normalizedAmount = validateAndNormalizeAmount(type, amount);
 
     synchronized (lock) {
-
       if (type == TransactionType.WITHDRAWAL) {
         var balance = calculateBalance();
         if (normalizedAmount.compareTo(balance) > 0) {

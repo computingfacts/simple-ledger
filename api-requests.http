@@ -1,0 +1,98 @@
+@baseUrl = http://127.0.0.1:8086
+
+# Start the application, then run these requests from top to bottom.
+# Restart before repeating the sequence: successful POSTs add new transactions.
+
+### Initial balance: 200, GBP 0.00
+GET {{baseUrl}}/ledger/balance
+Accept: application/json
+
+### Initial history: 200, empty array
+GET {{baseUrl}}/ledger/transactions
+Accept: application/json
+
+### Deposit GBP 100: 201, transaction ID 1
+POST {{baseUrl}}/ledger/transactions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "DEPOSIT",
+  "amount": "100.00"
+}
+
+### Withdraw GBP 25: 201, transaction ID 2
+POST {{baseUrl}}/ledger/transactions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "WITHDRAWAL",
+  "amount": "25.00"
+}
+
+### Current balance: 200, GBP 75.00
+GET {{baseUrl}}/ledger/balance
+Accept: application/json
+
+### History: 200, deposit followed by withdrawal
+GET {{baseUrl}}/ledger/transactions
+Accept: application/json
+
+### Insufficient funds: 409, INSUFFICIENT_FUNDS
+POST {{baseUrl}}/ledger/transactions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "WITHDRAWAL",
+  "amount": "80.00"
+}
+
+### Zero amount: 400, INVALID_TRANSACTION
+POST {{baseUrl}}/ledger/transactions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "DEPOSIT",
+  "amount": "0.00"
+}
+
+### Numeric amount instead of a string: 400, INVALID_TRANSACTION
+POST {{baseUrl}}/ledger/transactions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "DEPOSIT",
+  "amount": 10.00
+}
+
+### Excess fractional digits, including a trailing zero: 400, INVALID_TRANSACTION
+POST {{baseUrl}}/ledger/transactions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "DEPOSIT",
+  "amount": "1.230"
+}
+
+### Unknown transaction type: 400, INVALID_TRANSACTION
+POST {{baseUrl}}/ledger/transactions
+Content-Type: application/json
+Accept: application/json
+
+{
+  "type": "TRANSFER",
+  "amount": "10.00"
+}
+
+### Rejected requests left the balance unchanged: 200, GBP 75.00
+GET {{baseUrl}}/ledger/balance
+Accept: application/json
+
+### Rejected requests left history unchanged: 200, the same two transactions
+GET {{baseUrl}}/ledger/transactions
+Accept: application/json

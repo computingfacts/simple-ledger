@@ -38,16 +38,15 @@ public class LedgerController {
   }
 
   @GetMapping("/balance")
-  public BalanceResponse getBalance(){
-   return BalanceResponse.from(ledgerService.getBalance());
+  public BalanceResponse getBalance() {
+    return BalanceResponse.from(ledgerService.getBalance());
   }
 
   @GetMapping("/transactions")
-  public List<TransactionResponse> getTransactions(){
+  public List<TransactionResponse> getTransactions() {
     return ledgerService.getTransactions()
         .stream()
         .map(TransactionResponse::from)
         .toList();
-
   }
 }
