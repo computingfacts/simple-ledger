@@ -33,11 +33,15 @@ public class LedgerService {
     var normalizedAmount = validateAndNormalizeAmount(type, amount);
 
     synchronized (lock) {
-      var balance = calculateBalance();
-      if (type == TransactionType.WITHDRAWAL && normalizedAmount.compareTo(balance) > 0) {
-        throw new InsufficientFundsException(
-            "Cannot withdraw %s: the balance is only %s".formatted(normalizedAmount.toPlainString(),
-                balance.toPlainString()));
+
+      if (type == TransactionType.WITHDRAWAL) {
+        var balance = calculateBalance();
+        if (normalizedAmount.compareTo(balance) > 0) {
+          throw new InsufficientFundsException(
+              "Cannot withdraw %s: the balance is only %s".formatted(
+                  normalizedAmount.toPlainString(),
+                  balance.toPlainString()));
+        }
       }
 
       long transactionId = transactions.size() + 1L;
